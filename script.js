@@ -1,132 +1,177 @@
-document.addEventListener("DOMContentLoaded", function () {
+// =============================
+// 📅 DAYS ARRAY (Monday First)
+// =============================
+const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-    const taskList = document.getElementById("taskList");
-    const taskInput = document.getElementById("taskInput");
-    const prioritySelect = document.getElementById("prioritySelect");
-    const dailyNote = document.getElementById("dailyNote");
+// =============================
+// 📆 GET TODAY NAME CORRECTLY
+// =============================
+function getTodayName() {
+    const todayIndex = new Date().getDay(); 
+    return days[todayIndex === 0 ? 6 : todayIndex - 1];
+}
 
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+// =============================
+// 📦 LOCAL STORAGE
+// =============================
+let timetable = JSON.parse(localStorage.getItem("timetable")) || {};
 
-    /* DAILY NOTE AUTO RESIZE */
-    dailyNote.value = localStorage.getItem("dailyNote") || "";
+// Always show today's timetable when opening
+let selectedDay = getTodayName();
+localStorage.setItem("selectedDay", selectedDay);
+
+// =============================
+// 📝 NOTES SECTION
+// =============================
+const noteBox = document.getElementById("noteBox");
+noteBox.value = localStorage.getItem("note") || "";
+
+function autoResize() {
+    noteBox.style.height = "auto";
+    noteBox.style.height = noteBox.scrollHeight + "px";
+}
+
+noteBox.addEventListener("input", () => {
+    localStorage.setItem("note", noteBox.value);
     autoResize();
-    dailyNote.addEventListener("input", function () {
-        localStorage.setItem("dailyNote", dailyNote.value);
-        autoResize();
-    });
+});
 
-    function autoResize() {
-        dailyNote.style.height = "auto";
-        dailyNote.style.height = dailyNote.scrollHeight + "px";
-    }
+autoResize();
 
-    window.addTask = function () {
-        if (taskInput.value.trim() === "") return;
+// =============================
+// 📅 DAY BUTTONS
+// =============================
+const dayContainer = document.getElementById("dayContainer");
 
-        tasks.push({
-            title: taskInput.value,
-            completed: false,
-            priority: prioritySelect.value,
-            subtasks: []
-        });
+days.forEach(day => {
+    const btn = document.createElement("button");
+    btn.innerText = day;
+    btn.className = "day-btn";
 
-        taskInput.value = "";
-        saveAndRender();
+    if (day === selectedDay) btn.classList.add("active");
+
+    btn.onclick = () => {
+        selectedDay = day;
+        localStorage.setItem("selectedDay", selectedDay);
+
+        document.querySelectorAll(".day-btn")
+            .forEach(b => b.classList.remove("active"));
+
+        btn.classList.add("active");
+        renderSlots();
     };
 
-    function saveAndRender() {
-        localStorage.setItem("tasks", JSON.stringify(tasks));
-        renderTasks();
-    }
-
-    function renderTasks() {
-        taskList.innerHTML = "";
-
-        tasks.forEach((task, index) => {
-
-            const card = document.createElement("div");
-            card.className = `task-card ${task.priority}`;
-
-            const header = document.createElement("div");
-            header.className = "task-header";
-
-            const title = document.createElement("span");
-            title.className = "task-title";
-            if (task.completed) title.classList.add("completed");
-            title.innerText = task.title;
-
-            title.onclick = () => {
-                task.completed = !task.completed;
-                saveAndRender();
-            };
-
-            const deleteBtn = document.createElement("button");
-            deleteBtn.innerText = "❌";
-            deleteBtn.onclick = () => {
-                tasks.splice(index, 1);
-                saveAndRender();
-            };
-
-            header.appendChild(title);
-            header.appendChild(deleteBtn);
-            card.appendChild(header);
-
-            /* Subtask Input */
-            const wrapper = document.createElement("div");
-            wrapper.className = "subtask-input-wrapper";
-
-            const subInput = document.createElement("input");
-            subInput.placeholder = "Add subtask...";
-
-            const subBtn = document.createElement("button");
-            subBtn.innerText = "Add";
-
-            subBtn.onclick = () => {
-                if (subInput.value.trim() === "") return;
-
-                task.subtasks.push({
-                    title: subInput.value,
-                    completed: false
-                });
-
-                subInput.value = "";
-                saveAndRender();
-            };
-
-            wrapper.appendChild(subInput);
-            wrapper.appendChild(subBtn);
-            card.appendChild(wrapper);
-
-            /* Subtask List */
-            task.subtasks.forEach((sub, subIndex) => {
-
-                const subDiv = document.createElement("div");
-                subDiv.className = "subtask";
-
-                const subTitle = document.createElement("span");
-                subTitle.innerText = sub.title;
-                if (sub.completed) subTitle.classList.add("completed");
-
-                subTitle.onclick = () => {
-                    sub.completed = !sub.completed;
-                    saveAndRender();
-                };
-
-                const subDelete = document.createElement("button");
-                subDelete.innerText = "❌";
-                subDelete.onclick = () => {
-                    task.subtasks.splice(subIndex, 1);
-                    saveAndRender();
-                };
-
-                subDiv.appendChild(subTitle);
-                subDiv.appendChild(subDelete);
-                card.appendChild(subDiv);
-            });
-
-            taskList.appendChild(card);
-        });
-    }
-
-    renderTasks();
+    dayContainer.appendChild(btn);
 });
+
+// =============================
+// 🎨 COLOR CLASSES
+// =============================
+const colors = ["color1", "color2", "color3", "color4", "color5"];
+
+function getRandomColor() {
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+// =============================
+// ⏰ FORMAT 24H → 12H
+// =============================
+function formatTo12Hour(time24) {
+    if (!time24) return "";
+
+    let [hour, minute] = time24.split(":");
+    hour = parseInt(hour);
+
+    let ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12;
+    hour = hour ? hour : 12;
+
+    return `${hour}:${minute} ${ampm}`;
+}
+
+// =============================
+// 🧱 RENDER SLOTS
+// =============================
+function renderSlots() {
+    slotContainer.innerHTML = "";
+
+    if (!timetable[selectedDay]) {
+        timetable[selectedDay] = [];
+    }
+
+    timetable[selectedDay].forEach((slot, index) => {
+
+        const card = document.createElement("div");
+        card.className = `slot-card ${slot.color}`;
+
+        card.innerHTML = `
+            <div class="slot-content">
+                ${
+                    slot.time 
+                    ? `<div class="display-time">${formatTo12Hour(slot.time)}</div>` 
+                    : `<input type="time" class="time-input">`
+                }
+                <input type="text" value="${slot.subject}" placeholder="Subject">
+            </div>
+            <button class="delete-btn">✖</button>
+        `;
+
+        const timeInput = card.querySelector(".time-input");
+        const subjectInput = card.querySelector("input[type='text']");
+        const deleteBtn = card.querySelector(".delete-btn");
+
+        // If time input exists (not selected yet)
+        if (timeInput) {
+            timeInput.addEventListener("change", (e) => {
+                timetable[selectedDay][index].time = e.target.value;
+                saveData();
+                renderSlots(); // Re-render to replace input with display
+            });
+        }
+
+        // Update subject
+        subjectInput.addEventListener("input", (e) => {
+            timetable[selectedDay][index].subject = e.target.value;
+            saveData();
+        });
+
+        // Delete slot
+        deleteBtn.onclick = () => {
+            timetable[selectedDay].splice(index, 1);
+            saveData();
+            renderSlots();
+        };
+
+        slotContainer.appendChild(card);
+    });
+}
+
+// =============================
+// ➕ ADD SLOT
+// =============================
+function addSlot() {
+    if (!timetable[selectedDay]) {
+        timetable[selectedDay] = [];
+    }
+
+    timetable[selectedDay].push({
+        time: "",
+        subject: "",
+        color: getRandomColor()
+    });
+
+    saveData();
+    renderSlots();
+}
+
+// =============================
+// 💾 SAVE DATA
+// =============================
+function saveData() {
+    localStorage.setItem("timetable", JSON.stringify(timetable));
+}
+
+// =============================
+// 🚀 INITIAL LOAD
+// =============================
+renderSlots();
