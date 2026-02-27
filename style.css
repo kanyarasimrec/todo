@@ -2,185 +2,184 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
 }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1f1c2c, #928dab);
     min-height: 100vh;
-    background: linear-gradient(135deg, #141e30, #243b55);
-    display: flex;
-    justify-content: center;
-    padding: 40px 20px;
+    padding: 20px;
     color: white;
 }
 
 .container {
-    width: 100%;
-    max-width: 750px;
+    max-width: 900px;
+    margin: auto;
 }
 
-h1 {
+.title {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
+    font-size: 28px;
 }
 
-/* Glass Effect */
-.glass {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(15px);
-    border-radius: 18px;
-    padding: 20px;
+/* ================= Notes ================= */
+
+.note-section {
     margin-bottom: 20px;
 }
 
-/* Note */
-textarea {
+#noteBox {
     width: 100%;
-    min-height: 90px;
+    min-height: 60px;
     resize: none;
-    border: none;
-    outline: none;
-    border-radius: 12px;
     padding: 12px;
-    margin-top: 10px;
-    background: rgba(255,255,255,0.12);
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    background: rgba(255,255,255,0.1);
     color: white;
+    backdrop-filter: blur(10px);
+    transition: 0.3s;
 }
 
-/* Add Task */
-.add-task {
+#noteBox:focus {
+    background: rgba(255,255,255,0.2);
+}
+
+/* ================= Days ================= */
+
+.days {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
-.add-task input,
-#prioritySelect {
-    padding: 12px;
-    border-radius: 12px;
-    border: none;
-    outline: none;
-}
-
-.add-task button {
-    padding: 12px 18px;
-    border-radius: 12px;
+.day-btn {
+    padding: 8px 14px;
+    border-radius: 20px;
     border: none;
     cursor: pointer;
-    font-weight: 600;
-    background: linear-gradient(135deg, #00c9ff, #92fe9d);
+    background: rgba(255,255,255,0.15);
+    color: white;
+    transition: 0.3s;
 }
 
-/* Task Card */
-.task-card {
-    background: white;
+.day-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.day-btn.active {
+    background: #00f2fe;
     color: black;
-    border-radius: 18px;
-    padding: 18px;
-    margin-bottom: 20px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-    position: relative;
 }
 
-/* Priority Colors */
-.task-card.low::before,
-.task-card.medium::before,
-.task-card.high::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 6px;
-    height: 100%;
-    border-top-left-radius: 18px;
-    border-bottom-left-radius: 18px;
+/* ================= Slots ================= */
+
+.slots {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.task-card.low::before {
-    background: #4CAF50;
-}
-
-.task-card.medium::before {
-    background: #FFC107;
-}
-
-.task-card.high::before {
-    background: #F44336;
-}
-
-.task-header {
+.slot-card {
+    padding: 15px;
+    border-radius: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: 0.3s;
+    backdrop-filter: blur(10px);
 }
 
-.task-title.completed {
-    text-decoration: line-through;
-    opacity: 0.6;
+.slot-card:hover {
+    transform: scale(1.02);
 }
 
-/* Subtask Input */
-.subtask-input-wrapper {
+.slot-content {
     display: flex;
-    gap: 8px;
-    margin-top: 12px;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
-.subtask-input-wrapper input {
-    flex: 1;
+.slot-content input {
     padding: 8px;
     border-radius: 8px;
-    border: 1px solid #ddd;
-}
-
-.subtask-input-wrapper button {
-    padding: 8px 12px;
-    border-radius: 8px;
     border: none;
-    cursor: pointer;
-    background: #667eea;
-    color: white;
+    outline: none;
 }
 
-/* Subtasks */
-.subtask {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* 12-hour display */
+.display-time {
+    font-weight: bold;
+    background: rgba(255,255,255,0.2);
     padding: 6px 10px;
     border-radius: 8px;
-    margin-top: 6px;
-    background: #f5f5f5;
 }
 
-.subtask span.completed {
-    text-decoration: line-through;
-    opacity: 0.6;
+/* Delete button */
+.delete-btn {
+    background: #ff4b5c;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    transition: 0.3s;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+.delete-btn:hover {
+    background: #ff1e38;
+}
 
-    body {
-        padding: 20px 10px;
-    }
+/* Add button */
+.add-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    background: #00f2fe;
+    color: black;
+    font-weight: bold;
+    transition: 0.3s;
+}
 
-    .add-task {
+.add-btn:hover {
+    background: #00c6ff;
+}
+
+/* ================= Color Themes ================= */
+
+.color1 { background: linear-gradient(45deg, #ff6b6b, #ff9f43); }
+.color2 { background: linear-gradient(45deg, #1dd1a1, #10ac84); }
+.color3 { background: linear-gradient(45deg, #54a0ff, #2e86de); }
+.color4 { background: linear-gradient(45deg, #f368e0, #ee5253); }
+.color5 { background: linear-gradient(45deg, #feca57, #ff9ff3); }
+
+/* ================= Responsive ================= */
+
+@media (max-width: 600px) {
+
+    .slot-card {
         flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
     }
 
-    .add-task input,
-    .add-task button,
-    #prioritySelect {
+    .slot-content {
+        flex-direction: column;
         width: 100%;
     }
 
-    .subtask-input-wrapper {
-        flex-direction: column;
+    .slot-content input {
+        width: 100%;
     }
 
-    .subtask-input-wrapper input,
-    .subtask-input-wrapper button {
-        width: 100%;
+    .delete-btn {
+        align-self: flex-end;
     }
 }
