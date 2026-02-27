@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DSA Prep Planner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>📚 TODO LIST</h1>
+
+    <!-- DAILY NOTE -->
+    <div class="note-section glass">
+        <h2>🗒 Daily Study Notes</h2>
+        <textarea id="dailyNote" placeholder="Write today's plan, timings, goals..."></textarea>
+    </div>
+
+    <!-- ADD TASK -->
+    <div class="add-task">
+        <input type="text" id="taskInput" placeholder="Enter main task...">
+
+        <select id="prioritySelect">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+        </select>
+
+        <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <!-- TASK LIST -->
+    <div id="taskList"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
